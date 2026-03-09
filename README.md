@@ -16,6 +16,7 @@
 3. **恢复协议**：中断后可依据 memory 继续，不丢上下文
 4. **失败纪律**：3-strike 调试策略，防止无限重复失败
 5. **记忆体系扩展**：新增 `lessons.md`，复用经验模式
+6. **模板自检能力**：提供 `scripts/validate-template.ps1` 与最小 CI，持续检查结构和关键路径
 
 > 这些增强让“接近度”不只依赖提示词，而是依赖**可持续执行机制**，实际效果通常明显高于基础模板。
 ## 核心工程约束
@@ -195,6 +196,8 @@ Adapter     → 记录每次外部调用的入参、响应码、耗时
   devin-loop.md
   task-queue.md
   project-context.md
+  workflows/
+    template-validation.yml
   checklists/
     definition-of-done.md
     recovery.md
@@ -218,22 +221,41 @@ Adapter     → 记录每次外部调用的入参、响应码、耗时
 docs/autonomous-workflow.md
 docs/engineering-requirements.md
 docs/data-contracts.md
+docs/quickstart.md
+scripts/validate-template.ps1
 task_plan.md
 findings.md
 progress.md
 ```
 
 ## 使用步骤
-1. 在 `.github/task-queue.md` 写入当前目标与任务。
-2. 在 `.github/project-context.md` 补充项目约束。
-3. 按 `.github/devin-loop.md` 执行循环（实现→验证→修复→记录）。
-4. 每轮更新 `.github/memory/progress.md` 与 `decisions.md`。
-5. 通过 `.github/instructions/quality-gate.md` 后再标记任务 `done`。
+1. 先按 [`docs/quickstart.md`](docs/quickstart.md) 重置模板状态并填入真实项目上下文。
+2. 在 `.github/task-queue.md` 写入当前目标与任务。
+3. 在 `.github/project-context.md` 补充项目约束。
+4. 按 `.github/devin-loop.md` 执行循环（实现→验证→修复→记录）。
+5. 每轮更新 `.github/memory/progress.md` 与 `.github/memory/decisions.md`。
+6. 运行 `pwsh ./scripts/validate-template.ps1`，确认模板结构与关键引用仍然有效。
+7. 通过 `.github/instructions/quality-gate.md` 后再标记任务 `done`。
+
+## 仓库自检
+
+执行命令：
+
+```powershell
+pwsh ./scripts/validate-template.ps1
+```
+
+当前脚本会检查：
+- 模板关键文件和目录是否齐全
+- `.github/task-queue.md` 是否满足状态格式且最多只有一个 `in_progress`
+- README、workflow 示例和 memory 文档是否保留关键入口
+
+最小 CI 已内置在 `.github/workflows/template-validation.yml`。当你把这个模板接入真实代码仓库后，应在此基础上继续增加真实的单元测试和构建流水线。
 
 ## 推荐运行方式
-- 每次对话开头先读取：`task-queue.md` + `memory/progress.md`
-- 每次对话结尾写回：`task-queue.md` + `memory/*`
-- 遇到中断时使用：`instructions/resume.md`
+- 每次对话开头先读取：`.github/task-queue.md` + `.github/memory/progress.md`
+- 每次对话结尾写回：`.github/task-queue.md` + `.github/memory/*`
+- 遇到中断时使用：`.github/instructions/resume.md`
 
 ## 边界说明
 - 该模板能显著提升自治能力，但仍受平台安全与权限限制。

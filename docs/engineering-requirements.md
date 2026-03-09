@@ -279,6 +279,9 @@ class FakeLLM:
 
 ### 4.5 CI 配置要求
 
+当前模板仓库内置的是 `.github/workflows/template-validation.yml`，用于校验模板结构、关键入口和任务状态格式。
+当该模板接入真实代码仓库后，必须继续补充真实的离线单元测试流水线，例如：
+
 ```yaml
 # .github/workflows/test.yml（示例）
 jobs:

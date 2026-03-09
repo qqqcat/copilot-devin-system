@@ -13,9 +13,12 @@
 - P3: 文档与整理
 
 ## Active Goal
-构建“高自治 Copilot 执行系统模板”，使其具备任务分解、循环执行、测试修复、记忆持久化与可恢复推进能力。
+提升模板仓库的可执行性与可审计性，补齐文档到实际落地之间的缺口。
 
 ## Queue
+- [done][P1] 增加模板结构自检脚本与最小 CI workflow
+- [done][P1] 修正文档路径引用并补充 quickstart 指引
+- [done][P2] 回写审计结果到 findings/task_plan/progress/memory
 - [done][P1] 建立执行规划文件（task_plan/findings/progress）
 - [done][P1] 构建 `.github` 核心控制文件（agent/loop/queue/context）
 - [done][P1] 构建 `memory` 持久化结构
